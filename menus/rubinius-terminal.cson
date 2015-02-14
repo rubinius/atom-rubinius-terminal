@@ -1,0 +1,38 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Open New Rubinius Terminal'
+      'command': 'rubinius-terminal:open'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Rubinius Terminal'
+      'submenu': [
+        {
+          'label': 'New Rubinius Terminal Tab'
+          'command': 'rubinius-terminal:open'
+        }
+        {
+          'label': 'New Rubinius Terminal - Right Pane'
+          'command': 'rubinius-terminal:open-split-right'
+        }
+        {
+          'label': 'New Rubinius Terminal - Left Pane'
+          'command': 'rubinius-terminal:open-split-left'
+        }
+        {
+          'label': 'New Rubinius Terminal - Top Pane'
+          'command': 'rubinius-terminal:open-split-top'
+        }
+        {
+          'label': 'New Rubinius Terminal - Bottom Pane'
+          'command': 'rubinius-terminal:open-split-bottom'
+        }
+      ]
+    ]
+  }
+]

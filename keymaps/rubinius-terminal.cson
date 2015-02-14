@@ -1,0 +1,19 @@
+# Keybindings require three things to be fully defined: A selector that is
+# matched against the focused element, the keystroke and the command to
+# execute.
+#
+# Below is a basic keybinding which registers on all platforms by applying to
+# the root workspace element.
+
+# For more detailed documentation see
+# https://atom.io/docs/latest/advanced/keymaps
+'atom-workspace':
+  'alt-shift-cmd-T': 'rubinius-terminal:open'
+  'alt-shift-cmd-right': 'rubinius-terminal:open-split-right'
+  'alt-shift-cmd-left': 'rubinius-terminal:open-split-left'
+  'alt-shift-cmd-up': 'rubinius-terminal:open-split-top'
+  'alt-shift-cmd-down': 'rubinius-terminal:open-split-bottom'
+
+'.rubinius-terminal':
+  'cmd-v': 'rubinius-terminal:paste'
+  'ctrl-v': 'rubinius-terminal:paste'
