@@ -1,5 +1,5 @@
-AtomRubiniusTerminalView = require '../lib/atom-rubinius-terminal-view'
+RubiniusTerminalView = require '../lib/rubinius-terminal-view'
 
-describe "AtomRubiniusTerminalView", ->
+describe "RubiniusTerminalView", ->
   it "has one valid test", ->
     expect("life").toBe "easy"
