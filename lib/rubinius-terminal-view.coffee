@@ -8,7 +8,8 @@ Terminal   = require './term.js'
 
 keypather  = do require 'keypather'
 
-{$, View, Task} = require 'atom'
+{Task} = require 'atom'
+{$, View} = require 'atom-space-pen-views'
 
 last = (str)-> str[str.length-1]
 
@@ -22,7 +23,7 @@ renderTemplate = (template, data)->
 class RubiniusTerminalView extends View
 
   @content: ->
-    @div class: 'term2'
+    @div class: 'rubinius-terminal'
 
   constructor: (@opts={})->
     opts.shell = process.env.SHELL or 'bash'
@@ -42,6 +43,8 @@ class RubiniusTerminalView extends View
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
 
+    ###
+    TODO: replace forkPtyProcess.
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'term2:data', (data) => @term.write data
     @ptyProcess.on 'term2:exit', (data) => @destroy()
@@ -61,6 +64,7 @@ class RubiniusTerminalView extends View
 
     @input "#{runCommand}#{os.EOL}" if runCommand
     term.focus()
+    ###
 
     @attachEvents()
     @resizeToPane()

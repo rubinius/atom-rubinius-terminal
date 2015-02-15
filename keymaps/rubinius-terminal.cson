@@ -9,10 +9,10 @@
 # https://atom.io/docs/latest/advanced/keymaps
 'atom-workspace':
   'alt-shift-cmd-T': 'rubinius-terminal:open'
-  'alt-shift-cmd-right': 'rubinius-terminal:open-split-right'
-  'alt-shift-cmd-left': 'rubinius-terminal:open-split-left'
-  'alt-shift-cmd-up': 'rubinius-terminal:open-split-top'
-  'alt-shift-cmd-down': 'rubinius-terminal:open-split-bottom'
+  'alt-shift-cmd-right': 'rubinius-terminal:split-right'
+  'alt-shift-cmd-left': 'rubinius-terminal:split-left'
+  'alt-shift-cmd-up': 'rubinius-terminal:split-top'
+  'alt-shift-cmd-down': 'rubinius-terminal:split-bottom'
 
 '.rubinius-terminal':
   'cmd-v': 'rubinius-terminal:paste'

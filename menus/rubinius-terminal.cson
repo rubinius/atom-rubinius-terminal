@@ -18,19 +18,19 @@
         }
         {
           'label': 'New Rubinius Terminal - Right Pane'
-          'command': 'rubinius-terminal:open-split-right'
+          'command': 'rubinius-terminal:split-right'
         }
         {
           'label': 'New Rubinius Terminal - Left Pane'
-          'command': 'rubinius-terminal:open-split-left'
+          'command': 'rubinius-terminal:split-left'
         }
         {
           'label': 'New Rubinius Terminal - Top Pane'
-          'command': 'rubinius-terminal:open-split-top'
+          'command': 'rubinius-terminal:split-top'
         }
         {
           'label': 'New Rubinius Terminal - Bottom Pane'
-          'command': 'rubinius-terminal:open-split-bottom'
+          'command': 'rubinius-terminal:split-bottom'
         }
       ]
     ]
