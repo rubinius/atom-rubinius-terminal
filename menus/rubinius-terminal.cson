@@ -2,7 +2,7 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Open New Rubinius Terminal'
+      'label': 'New Rubinius Terminal'
       'command': 'rubinius-terminal:open'
     }
   ]
@@ -13,23 +13,23 @@
       'label': 'Rubinius Terminal'
       'submenu': [
         {
-          'label': 'New Rubinius Terminal Tab'
+          'label': 'New Rubinius Terminal'
           'command': 'rubinius-terminal:open'
         }
         {
-          'label': 'New Rubinius Terminal - Right Pane'
+          'label': 'New Rubinius Terminal - Right'
           'command': 'rubinius-terminal:split-right'
         }
         {
-          'label': 'New Rubinius Terminal - Left Pane'
+          'label': 'New Rubinius Terminal - Left'
           'command': 'rubinius-terminal:split-left'
         }
         {
-          'label': 'New Rubinius Terminal - Top Pane'
+          'label': 'New Rubinius Terminal - Top'
           'command': 'rubinius-terminal:split-top'
         }
         {
-          'label': 'New Rubinius Terminal - Bottom Pane'
+          'label': 'New Rubinius Terminal - Bottom'
           'command': 'rubinius-terminal:split-bottom'
         }
       ]

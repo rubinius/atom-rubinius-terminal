@@ -4,7 +4,7 @@ os         = require 'os'
 fs         = require 'fs-plus'
 
 debounce   = require 'debounce'
-Terminal   = require './term.js'
+Terminal   = require './vendor/term.js'
 
 keypather  = do require 'keypather'
 

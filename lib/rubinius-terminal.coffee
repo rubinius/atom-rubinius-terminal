@@ -1,5 +1,6 @@
 RubiniusTerminalView = require './rubinius-terminal-view'
 {CompositeDisposable} = require 'atom'
+path = require 'path'
 
 capitalize = (str)-> str[0].toUpperCase() + str[1..].toLowerCase()
 
