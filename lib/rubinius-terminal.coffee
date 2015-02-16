@@ -88,11 +88,9 @@ module.exports = RubiniusTerminal =
     @subscriptions = new CompositeDisposable
 
     @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:open': => @newTerminal()
-    ###
     ['left', 'right', 'top', 'bottom'].forEach (direction) =>
       @subscriptions.add atom.commands.add 'atom-workspace', "rubinius-terminal:split-#{direction}", @splitTerminal(direction)
     @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:pipe-path': => @pipeTerminal
-    ###
 
     ###
     TODO: update to current CommandRegistry
