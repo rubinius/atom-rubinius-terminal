@@ -48,32 +48,32 @@ class RubiniusTerminalView extends View
     @ptyProcess = @forkPtyProcess args
     @ptyProcess.on 'term2:data', (data) => @term.write data
     @ptyProcess.on 'term2:exit', (data) => @destroy()
+    ###
 
     colorsArray = (colorCode for colorName, colorCode of colors)
-    @term = term = new Terminal {
+    @terminal = terminal = new Terminal {
       useStyle: no
       screenKeys: no
       colors: colorsArray
       cursorBlink, scrollback, cols, rows
     }
 
-    term.end = => @destroy()
+    terminal.end = => @destroy()
 
-    term.on "data", (data)=> @input data
-    term.open this.get(0)
+    terminal.on "data", (data)=> @input data
+    terminal.open this.get(0)
 
     @input "#{runCommand}#{os.EOL}" if runCommand
-    term.focus()
-    ###
+    terminal.focus()
 
     @attachEvents()
     @resizeToPane()
 
   input: (data) ->
-    @ptyProcess.send event: 'input', text: data
+    # @ptyProcess.send event: 'input', text: data
 
   resize: (cols, rows) ->
-    @ptyProcess.send {event: 'resize', rows, cols}
+    # @ptyProcess.send {event: 'resize', rows, cols}
 
   titleVars: ->
     bashName: last @opts.shell.split '/'
@@ -89,7 +89,7 @@ class RubiniusTerminalView extends View
   attachEvents: ->
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
-    @command "term2:paste", => @paste()
+    # @command "term2:paste", => @paste()
 
   paste: ->
     @input atom.clipboard.read()
@@ -109,22 +109,22 @@ class RubiniusTerminalView extends View
     super
 
   focusTerm: ->
-    @term.element.focus()
-    @term.focus()
+    @terminal.element.focus()
+    @terminal.focus()
 
   resizeToPane: ->
     {cols, rows} = @getDimensions()
     return unless cols > 0 and rows > 0
-    return unless @term
-    return if @term.rows is rows and @term.cols is cols
+    return unless @terminal
+    return if @terminal.rows is rows and @terminal.cols is cols
 
     @resize cols, rows
-    @term.resize cols, rows
+    @terminal.resize cols, rows
     atom.workspaceView.getActivePaneView().css overflow: 'visible'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'
-    if @term
+    if @terminal
       @find('.terminal').append fakeCol
       fakeCol = @find(".terminal span#colSize")
       cols = Math.floor (@width() / fakeCol.width()) or 9
@@ -138,8 +138,8 @@ class RubiniusTerminalView extends View
 
   destroy: ->
     @detachResizeEvents()
-    @ptyProcess.terminate()
-    @term.destroy()
+    # @ptyProcess.terminate()
+    @terminal.destroy()
     parentPane = atom.workspace.getActivePane()
     if parentPane.activeItem is this
       parentPane.removeItem parentPane.activeItem

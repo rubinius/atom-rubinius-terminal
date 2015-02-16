@@ -9,44 +9,90 @@ module.exports = RubiniusTerminal =
   terminalViews: []
   focusedTerminal: off
 
-  configDefaults:
-    autoRunCommand: null
-    titleTemplate: "Terminal ({{ bashName }})"
+  config:
+    autoRunCommand:
+      type: 'string'
+      default: ''
+    titleTemplate:
+      type: 'string'
+      default: "Terminal ({{ bashName }})"
+    scrollback:
+      type: 'integer'
+      default: 1000
+    cursorBlink:
+      type: 'boolean'
+      default: yes
+    openPanesInSameSplit:
+      type: 'boolean'
+      default: no
     colors:
-      normalBlack : '#2e3436'
-      normalRed   : '#cc0000'
-      normalGreen : '#4e9a06'
-      normalYellow: '#c4a000'
-      normalBlue  : '#3465a4'
-      normalPurple: '#75507b'
-      normalCyan  : '#06989a'
-      normalWhite : '#d3d7cf'
-      brightBlack : '#555753'
-      brightRed   : '#ef2929'
-      brightGreen : '#8ae234'
-      brightYellow: '#fce94f'
-      brightBlue  : '#729fcf'
-      brightPurple: '#ad7fa8'
-      brightCyan  : '#34e2e2'
-      brightWhite : '#eeeeec'
-
-    scrollback: 1000
-    cursorBlink: yes
-    shellArguments: do ({SHELL, HOME}=process.env)->
-      switch path.basename SHELL.toLowerCase()
-        when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
-        when 'zsh'  then ""
-        else ''
-    openPanesInSameSplit: no
+      type: 'object'
+      properties:
+        normalBlack:
+          type: 'color'
+          default: '#2e3436'
+        normalRed:
+          type: 'color'
+          default: '#cc0000'
+        normalGreen:
+          type: 'color'
+          default: '#4e9a06'
+        normalYellow:
+          type: 'color'
+          default: '#c4a000'
+        normalBlue:
+          type: 'color'
+          default: '#3465a4'
+        normalPurple:
+          type: 'color'
+          default: '#75507b'
+        normalCyan:
+          type: 'color'
+          default: '#06989a'
+        normalWhite:
+          type: 'color'
+          default: '#d3d7cf'
+        brightBlack:
+          type: 'color'
+          default: '#555753'
+        brightRed:
+          type: 'color'
+          default: '#ef2929'
+        brightGreen:
+          type: 'color'
+          default: '#8ae234'
+        brightYellow:
+          type: 'color'
+          default: '#fce94f'
+        brightBlue:
+          type: 'color'
+          default: '#729fcf'
+        brightPurple:
+          type: 'color'
+          default: '#ad7fa8'
+        brightCyan:
+          type: 'color'
+          default: '#34e2e2'
+        brightWhite:
+          type: 'color'
+          default: '#eeeeec'
+    shellArguments:
+      type: 'string'
+      default: do ({SHELL, HOME}=process.env) ->
+        switch path.basename SHELL.toLowerCase()
+          when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
+          when 'zsh'  then ""
+          else ''
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
-    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-package:toggle': => @toggle()
     @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:open': => @newTerminal()
+    ###
     ['left', 'right', 'top', 'bottom'].forEach (direction) =>
       @subscriptions.add atom.commands.add 'atom-workspace', "rubinius-terminal:split-#{direction}", @splitTerminal(direction)
     @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:pipe-path': => @pipeTerminal
+    ###
 
     ###
     TODO: update to current CommandRegistry
@@ -79,10 +125,10 @@ module.exports = RubiniusTerminal =
       shellArguments: atom.config.get 'rubinius-terminal.shellArguments'
       titleTemplate : atom.config.get 'rubinius-terminal.titleTemplate'
       cursorBlink   : atom.config.get 'rubinius-terminal.cursorBlink'
-      colors        : @getColors()
+    #  colors        : @getColors()
 
     terminalView = new RubiniusTerminalView opts
-    terminalView.on 'remove', @handleRemoveTerm.bind this
+    terminalView.on 'remove', @handleRemoveTerminal.bind this
 
     @terminalViews.push? terminalView
     terminalView
@@ -135,7 +181,7 @@ module.exports = RubiniusTerminal =
       item.pty.write stream.trim()
       item.term.focus()
 
-  handleRemoveTerm: (terminalView) ->
+  handleRemoveTerminal: (terminalView) ->
     @terminalViews.splice @terminalViews.indexOf(terminalView), 1
 
   deactivate: ->
