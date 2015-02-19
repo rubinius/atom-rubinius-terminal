@@ -1,21 +1,21 @@
 {
-  "name": "rubinius-terminal",
+  "name": "atom-rubinius-terminal",
   "main": "./lib/rubinius-terminal",
   "version": "0.0.1",
   "description": "Opens a terminal tab within Atom that is configured to run Rubinius",
   "activationCommands": {
     "atom-workspace": [
-      "rubinius-terminal:open",
-      "rubinius-terminal:split-left",
-      "rubinius-terminal:split-right",
-      "rubinius-terminal:split-top",
-      "rubinius-terminal:split-bottom"
+      "atom-rubinius-terminal:open",
+      "atom-rubinius-terminal:split-left",
+      "atom-rubinius-terminal:split-right",
+      "atom-rubinius-terminal:split-up",
+      "atom-rubinius-terminal:split-down"
     ]
   },
   "repository": "https://github.com/rubinius/atom-rubinius-terminal",
   "license": "MPL/2.0",
   "engines": {
-    "atom": ">=0.179.0 <2.0.0"
+    "atom": ">=0.180.0 <2.0.0"
   },
   "dependencies": {
     "atom-space-pen-views": "^2.0.3",

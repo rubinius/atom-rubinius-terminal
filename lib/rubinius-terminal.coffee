@@ -25,6 +25,13 @@ module.exports = RubiniusTerminal =
     openPanesInSameSplit:
       type: 'boolean'
       default: no
+    shellArguments:
+      type: 'string'
+      default: do ({SHELL, HOME}=process.env) ->
+        switch path.basename SHELL.toLowerCase()
+          when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
+          when 'zsh'  then ""
+          else ''
     colors:
       type: 'object'
       properties:
@@ -76,21 +83,15 @@ module.exports = RubiniusTerminal =
         brightWhite:
           type: 'color'
           default: '#eeeeec'
-    shellArguments:
-      type: 'string'
-      default: do ({SHELL, HOME}=process.env) ->
-        switch path.basename SHELL.toLowerCase()
-          when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
-          when 'zsh'  then ""
-          else ''
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
-    @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:open': => @newTerminal()
-    ['left', 'right', 'top', 'bottom'].forEach (direction) =>
-      @subscriptions.add atom.commands.add 'atom-workspace', "rubinius-terminal:split-#{direction}", @splitTerminal(direction)
-    @subscriptions.add atom.commands.add 'atom-workspace', 'rubinius-terminal:pipe-path': => @pipeTerminal
+    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-rubinius-terminal:open': => @newTerminal.bind(this)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-rubinius-terminal:pipe-path': => @pipeTerminal.bind(this, 'path')
+
+    ['left', 'right', 'up', 'down'].forEach (direction) =>
+      @subscriptions.add atom.commands.add 'atom-workspace', "atom-rubinius-terminal:split-#{direction}", @splitTerminal.bind(this, direction)
 
     ###
     TODO: update to current CommandRegistry
@@ -109,7 +110,7 @@ module.exports = RubiniusTerminal =
       normalBlue, normalPurple, normalCyan, normalWhite
       brightBlack, brightRed, brightGreen, brightYellow
       brightBlue, brightPurple, brightCyan, brightWhite
-    }} = atom.config.get('rubinius-terminal')
+    }} = atom.config.get('atom-rubinius-terminal')
     [
       normalBlack, normalRed, normalGreen, normalYellow
       normalBlue, normalPurple, normalCyan, normalWhite
@@ -117,13 +118,13 @@ module.exports = RubiniusTerminal =
       brightBlue, brightPurple, brightCyan, brightWhite
     ]
 
-  createTerminalView:->
+  createTerminalView: ->
     opts =
-      runCommand    : atom.config.get 'rubinius-terminal.autoRunCommand'
-      shellArguments: atom.config.get 'rubinius-terminal.shellArguments'
-      titleTemplate : atom.config.get 'rubinius-terminal.titleTemplate'
-      cursorBlink   : atom.config.get 'rubinius-terminal.cursorBlink'
-    #  colors        : @getColors()
+      runCommand    : atom.config.get 'atom-rubinius-terminal.autoRunCommand'
+      shellArguments: atom.config.get 'atom-rubinius-terminal.shellArguments'
+      titleTemplate : atom.config.get 'atom-rubinius-terminal.titleTemplate'
+      cursorBlink   : atom.config.get 'atom-rubinius-terminal.cursorBlink'
+      colors        : @getColors()
 
     terminalView = new RubiniusTerminalView opts
     terminalView.on 'remove', @handleRemoveTerminal.bind this
@@ -131,8 +132,8 @@ module.exports = RubiniusTerminal =
     @terminalViews.push? terminalView
     terminalView
 
-  splitTerminal: (direction)->
-    openPanesInSameSplit = atom.config.get 'rubinius-terminal.openPanesInSameSplit'
+  splitTerminal: (direction) ->
+    openPanesInSameSplit = atom.config.get 'atom-rubinius-terminal.openPanesInSameSplit'
     terminalView = @createTerminalView()
     terminalView.on "click", => @focusedTerminal = terminalView
     direction = capitalize direction
@@ -156,9 +157,13 @@ module.exports = RubiniusTerminal =
       splitter()
 
   newTerminal: ->
+    console.log "newTerminal"
     terminalView = @createTerminalView()
+    console.log "newTerminal created"
     pane = atom.workspace.getActivePane()
+    console.log "newTerminal getActivePane"
     item = pane.addItem terminalView
+    console.log "newTerminal addItem"
     pane.activateItem item
 
   pipeTerminal: (action) ->
@@ -187,5 +192,5 @@ module.exports = RubiniusTerminal =
     @subscriptions.dispose()
 
   serialize: ->
-    terminalViewsState = this.terminalViews.map (view)-> view.serialize()
+    terminalViewsState = @terminalViews().map (view) -> view.serialize()
     {terminalViews: terminalViewsState}

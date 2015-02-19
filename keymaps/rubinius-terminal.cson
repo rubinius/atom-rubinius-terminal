@@ -8,12 +8,12 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 'atom-workspace':
-  'alt-shift-cmd-T': 'rubinius-terminal:open'
-  'alt-shift-cmd-right': 'rubinius-terminal:split-right'
-  'alt-shift-cmd-left': 'rubinius-terminal:split-left'
-  'alt-shift-cmd-up': 'rubinius-terminal:split-top'
-  'alt-shift-cmd-down': 'rubinius-terminal:split-bottom'
+  'ctrl-alt-T': 'atom-rubinius-terminal:open'
+  'ctrl-alt-right': 'atom-rubinius-terminal:split-right'
+  'ctrl-alt-left': 'atom-rubinius-terminal:split-left'
+  'ctrl-alt-up': 'atom-rubinius-terminal:split-up'
+  'ctrl-alt-down': 'atom-rubinius-terminal:split-down'
 
 '.rubinius-terminal':
-  'cmd-v': 'rubinius-terminal:paste'
-  'ctrl-v': 'rubinius-terminal:paste'
+  'cmd-v': 'atom-rubinius-terminal:paste'
+  'ctrl-v': 'atom-rubinius-terminal:paste'

@@ -1,9 +1,30 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
-  'atom-text-editor': [
+  'atom-rubinius-terminal': [
     {
-      'label': 'New Rubinius Terminal'
-      'command': 'rubinius-terminal:open'
+      'label': 'Rubinius Terminal'
+      'submenu': [
+        {
+          'label': 'Open'
+          'command': 'atom-rubinius-terminal:open'
+        }
+        {
+          'label': 'Split Right'
+          'command': 'atom-rubinius-terminal:split-right'
+        }
+        {
+          'label': 'Split Left'
+          'command': 'atom-rubinius-terminal:split-left'
+        }
+        {
+          'label': 'Split Up'
+          'command': 'atom-rubinius-terminal:split-up'
+        }
+        {
+          'label': 'Split Down'
+          'command': 'atom-rubinius-terminal:split-down'
+        }
+      ]
     }
   ]
 'menu': [
@@ -13,24 +34,24 @@
       'label': 'Rubinius Terminal'
       'submenu': [
         {
-          'label': 'New Rubinius Terminal'
-          'command': 'rubinius-terminal:open'
+          'label': 'Open'
+          'command': 'atom-rubinius-terminal:open'
         }
         {
-          'label': 'New Rubinius Terminal - Right'
-          'command': 'rubinius-terminal:split-right'
+          'label': 'Split Right'
+          'command': 'atom-rubinius-terminal:split-right'
         }
         {
-          'label': 'New Rubinius Terminal - Left'
-          'command': 'rubinius-terminal:split-left'
+          'label': 'Split Left'
+          'command': 'atom-rubinius-terminal:split-left'
         }
         {
-          'label': 'New Rubinius Terminal - Top'
-          'command': 'rubinius-terminal:split-top'
+          'label': 'Split Up'
+          'command': 'atom-rubinius-terminal:split-up'
         }
         {
-          'label': 'New Rubinius Terminal - Bottom'
-          'command': 'rubinius-terminal:split-bottom'
+          'label': 'Split Down'
+          'command': 'atom-rubinius-terminal:split-down'
         }
       ]
     ]

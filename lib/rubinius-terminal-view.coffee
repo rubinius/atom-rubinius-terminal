@@ -23,14 +23,14 @@ renderTemplate = (template, data)->
 class RubiniusTerminalView extends View
 
   @content: ->
-    @div class: 'rubinius-terminal'
+    @div class: 'atom-rubinius-terminal'
 
   constructor: (@opts={})->
     opts.shell = process.env.SHELL or 'bash'
     opts.shellArguments or= ''
 
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    opts.cwd = opts.cwd or atom.project.getPath() or editorPath or process.env.HOME
+    opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
     super
 
   forkPtyProcess: (args=[])->
@@ -120,7 +120,10 @@ class RubiniusTerminalView extends View
 
     @resize cols, rows
     @terminal.resize cols, rows
-    atom.workspaceView.getActivePaneView().css overflow: 'visible'
+    pane = atom.workspace.getActivePane()
+    # Fixed deprecation on atom.workspaceView.getActivePaneView() but the new
+    # method does not have a .css
+    # atom.views.getView(pane).css overflow: 'visible'
 
   getDimensions: ->
     fakeCol = $("<span id='colSize'>&nbsp;</span>").css visibility: 'hidden'
