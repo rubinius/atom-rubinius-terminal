@@ -87,22 +87,18 @@ module.exports = RubiniusTerminal =
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
-    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-rubinius-terminal:open': => @newTerminal.bind(this)
-    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-rubinius-terminal:pipe-path': => @pipeTerminal.bind(this, 'path')
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'atom-rubinius-terminal:open': =>
+        @newTerminal()
+
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'atom-rubinius-terminal:pipe-path': =>
+        @pipeTerminal 'path'
 
     ['left', 'right', 'up', 'down'].forEach (direction) =>
-      @subscriptions.add atom.commands.add 'atom-workspace', "atom-rubinius-terminal:split-#{direction}", @splitTerminal.bind(this, direction)
-
-    ###
-    TODO: update to current CommandRegistry
-    https://atom.io/docs/api/v0.176.0/CommandRegistry
-    ['up', 'right', 'down', 'left'].forEach (direction)=>
-      atom.workspaceView.command "rubinius-terminal:open-split-#{direction}", @splitTerm.bind(this, direction)
-
-    atom.workspaceView.command "rubinius-terminal:open", @newTerm.bind(this)
-    atom.workspaceView.command "rubinius-terminal:pipe-path", @pipeTerm.bind(this, 'path')
-    atom.workspaceView.command "rubinius-terminal:pipe-selection", @pipeTerm.bind(this, 'selection')
-    ###
+      @subscriptions.add atom.commands.add 'atom-workspace',
+        "atom-rubinius-terminal:split-#{direction}",
+          @splitTerminal.bind this, direction
 
   getColors: ->
     {colors: {
@@ -157,13 +153,9 @@ module.exports = RubiniusTerminal =
       splitter()
 
   newTerminal: ->
-    console.log "newTerminal"
     terminalView = @createTerminalView()
-    console.log "newTerminal created"
     pane = atom.workspace.getActivePane()
-    console.log "newTerminal getActivePane"
     item = pane.addItem terminalView
-    console.log "newTerminal addItem"
     pane.activateItem item
 
   pipeTerminal: (action) ->
@@ -188,7 +180,7 @@ module.exports = RubiniusTerminal =
     @terminalViews.splice @terminalViews.indexOf(terminalView), 1
 
   deactivate: ->
-    @terminalViews.forEach (view)-> view.deactivate()
+    @terminalViews.forEach (view) -> view.deactivate()
     @subscriptions.dispose()
 
   serialize: ->
