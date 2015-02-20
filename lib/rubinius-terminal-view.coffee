@@ -34,8 +34,8 @@ class RubiniusTerminalView extends View
     super
 
   forkPtyProcess: (args=[])->
-    processPath = require.resolve './pty'
-    path = atom.project.getPath() ? '~'
+    processPath = require.resolve 'pty.js'
+    path = atom.project.getPaths()[0] ? '~'
     Task.once processPath, fs.absolute(path), args
 
   initialize: (@state)->
@@ -43,12 +43,9 @@ class RubiniusTerminalView extends View
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
 
-    ###
-    TODO: replace forkPtyProcess.
     @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'term2:data', (data) => @term.write data
-    @ptyProcess.on 'term2:exit', (data) => @destroy()
-    ###
+    @ptyProcess.on 'atom-rubinius-terminal:data', (data) => @terminal.write data
+    @ptyProcess.on 'atom-rubinius-terminal:exit', (data) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)
     @terminal = terminal = new Terminal {
@@ -70,10 +67,10 @@ class RubiniusTerminalView extends View
     @resizeToPane()
 
   input: (data) ->
-    # @ptyProcess.send event: 'input', text: data
+    @ptyProcess.send event: 'input', text: data
 
   resize: (cols, rows) ->
-    # @ptyProcess.send {event: 'resize', rows, cols}
+    @ptyProcess.send {event: 'resize', rows, cols}
 
   titleVars: ->
     bashName: last @opts.shell.split '/'
@@ -89,7 +86,7 @@ class RubiniusTerminalView extends View
   attachEvents: ->
     @resizeToPane = @resizeToPane.bind this
     @attachResizeEvents()
-    # @command "term2:paste", => @paste()
+    # @command "atom-rubinius-terminal:paste", => @paste()
 
   paste: ->
     @input atom.clipboard.read()
