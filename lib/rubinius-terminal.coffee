@@ -11,20 +11,13 @@ module.exports = RubiniusTerminal =
 
   config:
     autoRunCommand:
-      type: 'string'
-      default: ''
+      type: 'string'; default: ''
     titleTemplate:
-      type: 'string'
-      default: "Terminal ({{ bashName }})"
+      type: 'string'; default: "Terminal ({{ bashName }})"
     scrollback:
-      type: 'integer'
-      default: 1000
+      type: 'integer'; default: 1000
     cursorBlink:
-      type: 'boolean'
-      default: yes
-    openPanesInSameSplit:
-      type: 'boolean'
-      default: no
+      type: 'boolean'; default: yes
     shellArguments:
       type: 'string'
       default: do ({SHELL, HOME}=process.env) ->
@@ -36,53 +29,37 @@ module.exports = RubiniusTerminal =
       type: 'object'
       properties:
         normalBlack:
-          type: 'color'
-          default: '#2e3436'
+          type: 'color'; default: '#2e3436'
         normalRed:
-          type: 'color'
-          default: '#cc0000'
+          type: 'color'; default: '#cc0000'
         normalGreen:
-          type: 'color'
-          default: '#4e9a06'
+          type: 'color'; default: '#4e9a06'
         normalYellow:
-          type: 'color'
-          default: '#c4a000'
+          type: 'color'; default: '#c4a000'
         normalBlue:
-          type: 'color'
-          default: '#3465a4'
+          type: 'color'; default: '#3465a4'
         normalPurple:
-          type: 'color'
-          default: '#75507b'
+          type: 'color'; default: '#75507b'
         normalCyan:
-          type: 'color'
-          default: '#06989a'
+          type: 'color'; default: '#06989a'
         normalWhite:
-          type: 'color'
-          default: '#d3d7cf'
+          type: 'color'; default: '#d3d7cf'
         brightBlack:
-          type: 'color'
-          default: '#555753'
+          type: 'color'; default: '#555753'
         brightRed:
-          type: 'color'
-          default: '#ef2929'
+          type: 'color'; default: '#ef2929'
         brightGreen:
-          type: 'color'
-          default: '#8ae234'
+          type: 'color'; default: '#8ae234'
         brightYellow:
-          type: 'color'
-          default: '#fce94f'
+          type: 'color'; default: '#fce94f'
         brightBlue:
-          type: 'color'
-          default: '#729fcf'
+          type: 'color'; default: '#729fcf'
         brightPurple:
-          type: 'color'
-          default: '#ad7fa8'
+          type: 'color'; default: '#ad7fa8'
         brightCyan:
-          type: 'color'
-          default: '#34e2e2'
+          type: 'color'; default: '#34e2e2'
         brightWhite:
-          type: 'color'
-          default: '#eeeeec'
+          type: 'color'; default: '#eeeeec'
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -129,33 +106,20 @@ module.exports = RubiniusTerminal =
     terminalView
 
   splitTerminal: (direction) ->
-    openPanesInSameSplit = atom.config.get 'atom-rubinius-terminal.openPanesInSameSplit'
     terminalView = @createTerminalView()
     terminalView.on "click", => @focusedTerminal = terminalView
     direction = capitalize direction
 
-    splitter = =>
-      pane = activePane["split#{direction}"] items: [terminalView]
-      activePane.rubiniusTerminalSplits[direction] = pane
-      @focusedTerminal = [pane, pane.items[0]]
-
     activePane = atom.workspace.getActivePane()
     activePane.rubiniusTerminalSplits or= {}
-    if openPanesInSameSplit
-      if activePane.rubiniusTerminalSplits[direction] and activePane.rubiniusTerminalSplits[direction].items.length > 0
-        pane = activePane.rubiniusTerminalSplits[direction]
-        item = pane.addItem terminalView
-        pane.activateItem item
-        @focusedTerminal = [pane, item]
-      else
-        splitter()
-    else
-      splitter()
+
+    pane = activePane["split#{direction}"] items: [terminalView]
+    activePane.rubiniusTerminalSplits[direction] = pane
+    @focusedTerminal = [pane, pane.items[0]]
 
   newTerminal: ->
-    terminalView = @createTerminalView()
     pane = atom.workspace.getActivePane()
-    item = pane.addItem terminalView
+    item = pane.addItem @createTerminalView()
     pane.activateItem item
 
   pipeTerminal: (action) ->
