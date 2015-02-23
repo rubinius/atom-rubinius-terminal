@@ -1,14 +1,14 @@
-util       = require 'util'
-path       = require 'path'
-os         = require 'os'
-fs         = require 'fs-plus'
+util = require 'util'
+path = require 'path'
+os = require 'os'
+fs = require 'fs-plus'
+spawn = require('child_process').spawn
 
-debounce   = require 'debounce'
-Terminal   = require './vendor/term.js'
+debounce = require 'debounce'
+Terminal = require './vendor/term.js'
 
-keypather  = do require 'keypather'
+keypather = do require 'keypather'
 
-{Task} = require 'atom'
 {$, View} = require 'atom-space-pen-views'
 
 last = (str)-> str[str.length-1]
@@ -26,38 +26,59 @@ class RubiniusTerminalView extends View
     @div class: 'atom-rubinius-terminal'
 
   constructor: (@opts={})->
-    opts.shell = process.env.SHELL or 'bash'
+    opts.shell = process.env.SHELL or '/bin/sh'
     opts.shellArguments or= ''
 
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
+    opts.cwd = fs.absolute(opts.cwd or
+      atom.project.getPaths()[0] or
+      editorPath or process.env.HOME)
     super
 
-  forkPtyProcess: (args=[])->
-    processPath = require.resolve 'pty.js'
-    path = atom.project.getPaths()[0] ? '~'
-    Task.once processPath, fs.absolute(path), args
+  createPTY: (args=[]) ->
+    package_path = atom.packages.resolvePackagePath 'atom-rubinius-terminal'
+    pty = fs.absolute("#{package_path}/src/terminal.rb")
+    console.log pty
+    options =
+      cwd: @opts.cwd
+      env:
+        "PS1": "\\w\\$ "
+        "PS2": "> "
+        "PS4": "+ "
+        "TERM": "xterm-color"
+        "HOME": process.env.HOME
+      stdio: 'pipe'
 
-  initialize: (@state)->
+    @ptyProcess = spawn "/Users/bshirai/.rubies/rbx-2.4.1/bin/rbx", [pty, @opts.shell], options
+    [@ptyRead, @ptyWrite] = [@ptyProcess.stdin, @ptyProcess.stdout]
+
+    @ptyProcess
+
+  initialize: (@state) ->
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
 
-    @ptyProcess = @forkPtyProcess args
-    @ptyProcess.on 'atom-rubinius-terminal:data', (data) => @terminal.write data
-    @ptyProcess.on 'atom-rubinius-terminal:exit', (data) => @destroy()
+    @createPTY args
+
+    @ptyWrite.on 'data', (data) =>
+      console.log "stdout: #{typeof(data).toString()}, #{data}"
+      @terminal.write data.toString()
+
+    # TODO: investigate this lifetime
+    # @ptyProcess.on 'atom-rubinius-terminal:exit', (data) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)
     @terminal = terminal = new Terminal {
       useStyle: no
-      screenKeys: no
+      screenKeys: yes
       colors: colorsArray
       cursorBlink, scrollback, cols, rows
     }
 
     terminal.end = => @destroy()
 
-    terminal.on "data", (data)=> @input data
+    terminal.on 'data', (data) => @input data
     terminal.open this.get(0)
 
     @input "#{runCommand}#{os.EOL}" if runCommand
@@ -67,10 +88,10 @@ class RubiniusTerminalView extends View
     @resizeToPane()
 
   input: (data) ->
-    @ptyProcess.send event: 'input', text: data
+    @ptyRead.write data
 
   resize: (cols, rows) ->
-    @ptyProcess.send {event: 'resize', rows, cols}
+    # TODO: previously: @ptyProcess.send {event: 'resize', rows, cols}
 
   titleVars: ->
     bashName: last @opts.shell.split '/'
@@ -118,8 +139,8 @@ class RubiniusTerminalView extends View
     @resize cols, rows
     @terminal.resize cols, rows
     pane = atom.workspace.getActivePane()
-    # Fixed deprecation on atom.workspaceView.getActivePaneView() but the new
-    # method does not have a .css
+    # TODO: Fixed deprecation on atom.workspaceView.getActivePaneView()
+    # but this code does not translate:
     # atom.views.getView(pane).css overflow: 'visible'
 
   getDimensions: ->
@@ -138,7 +159,7 @@ class RubiniusTerminalView extends View
 
   destroy: ->
     @detachResizeEvents()
-    # @ptyProcess.terminate()
+    @ptyProcess.terminate()
     @terminal.destroy()
     parentPane = atom.workspace.getActivePane()
     if parentPane.activeItem is this
