@@ -1,7 +1,7 @@
 {
   "name": "atom-rubinius-terminal",
   "main": "./lib/rubinius-terminal",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Opens a terminal tab within Atom that is configured to run Rubinius",
   "activationCommands": {
     "atom-workspace": [
