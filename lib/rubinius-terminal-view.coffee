@@ -37,7 +37,8 @@ class RubiniusTerminalView extends View
 
   createPTY: (args=[]) ->
     package_path = atom.packages.resolvePackagePath 'atom-rubinius-terminal'
-    pty = fs.absolute("#{package_path}/src/terminal.rb")
+    pty = fs.absolute "#{package_path}/src/terminal.rb"
+    rbx = fs.absolute "~/.atom/rubinius/bin/rbx"
     console.log pty
     options =
       cwd: @opts.cwd
