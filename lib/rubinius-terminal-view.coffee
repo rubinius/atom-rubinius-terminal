@@ -50,7 +50,9 @@ class RubiniusTerminalView extends View
         "HOME": process.env.HOME
       stdio: 'pipe'
 
-    @ptyProcess = spawn "/Users/bshirai/.rubies/rbx-2.4.1/bin/rbx", [pty, @opts.shell], options
+    @ptyProcess = spawn rbx, [pty, @opts.shell], options
+
+    @ptyProcess.on 'exit', (code, signal) => @destroy()
     [@ptyRead, @ptyWrite] = [@ptyProcess.stdin, @ptyProcess.stdout]
 
     @ptyProcess
@@ -63,7 +65,6 @@ class RubiniusTerminalView extends View
     @createPTY args
 
     @ptyWrite.on 'data', (data) =>
-      console.log "stdout: #{typeof(data).toString()}, #{data}"
       @terminal.write data.toString()
 
     # TODO: investigate this lifetime
@@ -160,7 +161,6 @@ class RubiniusTerminalView extends View
 
   destroy: ->
     @detachResizeEvents()
-    @ptyProcess.terminate()
     @terminal.destroy()
     parentPane = atom.workspace.getActivePane()
     if parentPane.activeItem is this
