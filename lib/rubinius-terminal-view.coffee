@@ -50,25 +50,20 @@ class RubiniusTerminalView extends View
         "HOME": process.env.HOME
       stdio: 'pipe'
 
-    @ptyProcess = spawn rbx, [pty, @opts.shell], options
-
-    @ptyProcess.on 'exit', (code, signal) => @destroy()
-    [@ptyRead, @ptyWrite] = [@ptyProcess.stdin, @ptyProcess.stdout]
-
-    @ptyProcess
+    spawn rbx, [pty, @opts.shell], options
 
   initialize: (@state) ->
     {cols, rows} = @getDimensions()
     {cwd, shell, shellArguments, runCommand, colors, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
 
-    @createPTY args
+    @ptyProcess = @createPTY args
+    [@ptyRead, @ptyWrite] = [@ptyProcess.stdin, @ptyProcess.stdout]
 
     @ptyWrite.on 'data', (data) =>
       @terminal.write data.toString()
 
-    # TODO: investigate this lifetime
-    # @ptyProcess.on 'atom-rubinius-terminal:exit', (data) => @destroy()
+    @ptyProcess.on 'exit', (code, signal) => @destroy()
 
     colorsArray = (colorCode for colorName, colorCode of colors)
     @terminal = terminal = new Terminal {
