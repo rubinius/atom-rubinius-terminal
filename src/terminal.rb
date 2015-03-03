@@ -68,7 +68,6 @@ module Rubinius
             begin
               input = STDIN.read_nonblock MAX_READ_SIZE
               break unless input
-              log.info "writing to local: #{input.inspect}"
               @local.write input
             rescue IO::WaitReadable
               # do nothing
@@ -80,7 +79,6 @@ module Rubinius
           if read.include? @local
             begin
               output = @local.read_nonblock MAX_READ_SIZE
-              log.info "reading from local: #{output.inspect}"
               STDOUT.write output
             rescue IO::WaitReadable
               # do nothing
