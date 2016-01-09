@@ -12,9 +12,13 @@ Another objective is creating better integration between the terminal and the ed
 
 The Rubinius Terminal installs a binary build of Rubinius. When a terminal tab or pane is opened, the shell instance is configured so that Rubinius is the active Ruby.
 
+## Code of Conduct
+
+Participation in this project is governed by the Rubinius [Code of Conduct](http://rubinius.com/code-of-conduct/).
+
 ## License
 
-Rubinius Terminal is licensed under [Mozilla Public License, 2.0](https://www.mozilla.org/MPL/2.0/).
+Rubinius Terminal is licensed under [Mozilla Public License, 2.0](https://www.mozilla.org/MPL/2.0/). See the LICENSE file.
 
 ## Thanks
 
